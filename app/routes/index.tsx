@@ -28,7 +28,6 @@ export const loader = async () => {
 
 export default function IndexPage() {
   const userSchedules = useSuperLoaderData<typeof loader>();
-  console.dir(userSchedules);
 
   const availableDays = filterUniqueDates(
     userSchedules.flatMap((item) =>

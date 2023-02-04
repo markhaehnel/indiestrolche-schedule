@@ -98,4 +98,4 @@ class TwitchAPI {
   }
 }
 
-export default TwitchAPI;
+export { TwitchAPI };

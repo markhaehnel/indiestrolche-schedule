@@ -1,5 +1,5 @@
 import pipe from "froebel/pipe";
-import TwitchAPI from "~/lib/twitch/TwitchAPI";
+import { TwitchAPI } from "~/lib/twitch/TwitchAPI.server";
 import type { UserResponse } from "~/lib/twitch/models/UserResponse";
 
 const twitchApi = new TwitchAPI(

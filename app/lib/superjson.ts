@@ -70,6 +70,7 @@ export const redirect: RedirectFunction = (url, init = 302) => {
   let headers = new Headers(responseInit.headers);
   headers.set("Location", url);
 
+  // eslint-disable-next-line unicorn/no-null
   return new Response(null, {
     ...responseInit,
     headers,

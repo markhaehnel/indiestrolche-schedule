@@ -1,17 +1,7 @@
-import {
-  TeamResponse,
-  TeamResponseSchema,
-} from "~/lib/twitch/models/TeamResponseSchema";
-import {
-  ScheduleResponse,
-  ScheduleResponseSchema,
-} from "~/lib/twitch/models/ScheduleResponseSchema";
-import type { TeamMember } from "~/lib/twitch/models/TeamMemberSchema";
-import type { ScheduleEntry } from "~/lib/twitch/models/ScheduleEntrySchema";
-import {
-  UserResponse,
-  UserResponseSchema,
-} from "~/lib/twitch/models/UserResponse";
+import type { ScheduleResponse } from "~/lib/twitch/models/ScheduleResponseSchema";
+import { ScheduleResponseSchema } from "~/lib/twitch/models/ScheduleResponseSchema";
+import type { UserResponse } from "~/lib/twitch/models/UserResponse";
+import { UserResponseSchema } from "~/lib/twitch/models/UserResponse";
 import { getStartOfWeek } from "~/lib/getStartOfWeek";
 
 class TwitchAPI {
@@ -67,15 +57,6 @@ class TwitchAPI {
     this.expiresAt = Date.now() + data.expires_in * 1000;
 
     return data.access_token;
-  }
-
-  public async getTeam(
-    teamName: string
-  ): Promise<TeamResponse["data"][number]> {
-    const url = `/teams?name=${teamName}`;
-    const response = await this.makeRequest(url);
-    const { data } = await TeamResponseSchema.parseAsync(response);
-    return data[0];
   }
 
   public async getSchedule(

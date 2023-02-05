@@ -1,4 +1,3 @@
-import { ScrollSync, ScrollSyncPane } from "react-scroll-sync";
 import { superjson, useSuperLoaderData } from "~/lib/superjson";
 import { scheduleResolver } from "~/lib/resolvers/scheduleResolver";
 import { getStartOfWeek } from "~/lib/getStartOfWeek";
@@ -20,9 +19,26 @@ const filterUniqueDates = (data: Date[]) => {
   });
 };
 
+const getStreamerRingColor = (streamerName: string): string => {
+  switch (streamerName) {
+    case "marcusbmr": {
+      return "ring-green-600";
+    }
+    case "utzstauder": {
+      return "ring-amber-500";
+    }
+    case "internetshawna": {
+      return "ring-red-700";
+    }
+    default: {
+      return "ring-base-100";
+    }
+  }
+};
+
 export const loader = async () => {
   return superjson(
-    await scheduleResolver(["marcusbmr", "UtzStauder", "InternetShawna"])
+    await scheduleResolver(["marcusbmr", "utzstauder", "internetshawna"])
   );
 };
 
@@ -46,101 +62,65 @@ export default function IndexPage() {
     .map((item) => ({ date: item, weekday: getWeekdayName(item) }));
 
   return (
-    <div className={"mt-2 overflow-hidden"}>
-      <ScrollSync>
-        <>
+    <div className="carousel-center carousel h-full space-x-4 p-4">
+      {availableDays.map((weekday) => (
+        <div key={weekday.date.getTime()} className={"carousel-item"}>
           <div>
-            <ScrollSyncPane>
-              <div
-                className={
-                  "scrollbar-hide space-x-4 overflow-x-scroll whitespace-nowrap"
-                }
-              >
-                {availableDays.map((weekday) => (
-                  <div
-                    key={Number(weekday.date)}
-                    className={"inline-block w-96 text-center text-2xl"}
-                  >
-                    {weekday.weekday}
-                  </div>
-                ))}
-              </div>
-            </ScrollSyncPane>
-          </div>
-
-          {userSchedules.map((streamer, index, array) => (
-            <div key={streamer.id}>
-              <div
-                className={
-                  "absolute mt-2 w-full rounded-r border-t border-b px-4 py-2 text-center"
-                }
-              >
-                <span>{streamer.display_name}</span>
-              </div>
-              <ScrollSyncPane>
-                <div
-                  className={`space-x-4 overflow-x-scroll whitespace-nowrap pt-14 ${
-                    index === array.length - 1 ? "" : "scrollbar-hide"
-                  }`}
-                >
-                  {availableDays.map((weekday) => (
+            <h2 className={"text-center text-xl"}>{weekday.weekday}</h2>
+            {userSchedules.map((user) =>
+              user.segments
+                .filter((segment) =>
+                  datesAreOnSameDay(weekday.date, segment.start_time)
+                )
+                .map((segment) => (
+                  <div key={segment.id} className={"w-screen p-4 md:w-auto"}>
                     <div
-                      key={Number(weekday.date)}
-                      className={
-                        "max-w-96 inline-block w-96 space-x-4 space-y-6"
-                      }
+                      key={segment.id}
+                      className="card card-side card-compact mt-4 h-32 w-full truncate rounded-md bg-base-100 shadow-md md:w-96"
                     >
-                      <div className="flex flex-col space-y-4 p-2">
-                        {streamer.segments
-                          .filter((segment) =>
-                            datesAreOnSameDay(segment.start_time, weekday.date)
-                          )
-                          .map((segment) => (
-                            <div
-                              key={segment.id}
-                              className="card card-compact h-32 w-96 truncate bg-base-100 shadow"
+                      <div className="avatar items-center pl-4">
+                        <div
+                          className={`h-16 w-16 rounded-full ring ring-offset-2 md:h-16 md:w-16 ${getStreamerRingColor(
+                            user.login
+                          )}`}
+                        >
+                          <img
+                            src={user.profile_image_url}
+                            alt={user.display_name}
+                          />
+                        </div>
+                      </div>
+                      <div className="card-body truncate">
+                        <b>
+                          {segment.start_time.toLocaleTimeString("de", {
+                            timeStyle: "short",
+                          })}{" "}
+                          -{" "}
+                          {segment.end_time.toLocaleTimeString("de", {
+                            timeStyle: "short",
+                          })}
+                        </b>
+                        <span className={"truncate"} title={segment.title}>
+                          {segment.title}
+                        </span>
+                        {segment.category && (
+                          <div className="card-actions">
+                            <i
+                              className={"truncate"}
+                              title={segment.category.name}
                             >
-                              <div
-                                className={"h-2 overflow-hidden bg-orange-400"}
-                              ></div>
-                              <div className="card-body">
-                                <b>
-                                  {segment.start_time.toLocaleTimeString("de", {
-                                    timeStyle: "short",
-                                  })}{" "}
-                                  -{" "}
-                                  {segment.end_time.toLocaleTimeString("de", {
-                                    timeStyle: "short",
-                                  })}
-                                </b>
-                                <span
-                                  className={"truncate"}
-                                  title={segment.title}
-                                >
-                                  {segment.title}
-                                </span>
-                                {segment.category && (
-                                  <div className="card-actions">
-                                    <i
-                                      className={"truncate"}
-                                      title={segment.category.name}
-                                    >
-                                      {segment.category.name}
-                                    </i>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          ))}
+                              {segment.category.name}
+                            </i>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </ScrollSyncPane>
-            </div>
-          ))}
-        </>
-      </ScrollSync>
+                  </div>
+                ))
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

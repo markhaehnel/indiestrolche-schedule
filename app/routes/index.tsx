@@ -11,7 +11,7 @@ export default function IndexPage() {
   const weeklySchedule = useSuperLoaderData<typeof loader>();
 
   return (
-    <div className="carousel-center space-x carousel h-full p-4">
+    <div className="space-x carousel-center carousel h-full p-4">
       {weeklySchedule.map((schedule) => (
         <div key={schedule.date.getTime()} className={"carousel-item"}>
           <div>

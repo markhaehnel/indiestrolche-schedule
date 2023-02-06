@@ -21,7 +21,13 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body
+        className="h-full"
+        style={{
+          background:
+            "conic-gradient(from -90deg at 25% 115%, #ff000038, #ff006638, #ff00cc38, #cc00ff38, #6600ff38, #0000ff38, #0000ff38, #0000ff38, #0000ff38)",
+        }}
+      >
         <Outlet />
         <ScrollRestoration />
         {/* <Scripts />*/}

@@ -1,18 +1,11 @@
 import pipe from "froebel/pipe";
-import { TwitchAPI } from "~/lib/twitch/TwitchAPI.server";
 import type { UserResponse } from "~/lib/twitch/models/UserResponse";
+import { getTwitchAPIClient } from "~/lib/twitch/getTwitchAPIClient.server";
 
-const twitchApi = new TwitchAPI(
-  process.env.TWITCH_CLIENT_ID!,
-  process.env.TWITCH_CLIENT_SECRET!
-);
-
-const getUsers = async (userNames: string[]) => twitchApi.getUsers(userNames);
+const getUsers = async (userNames: string[]) => getTwitchAPIClient().getUsers(userNames);
 
 const getSchedulesAndMergeUsers = async (users: UserResponse["data"]) => {
-  const schedules = await Promise.all(
-    users.map((x) => twitchApi.getSchedule(x.id))
-  );
+  const schedules = await Promise.all(users.map((x) => getTwitchAPIClient().getSchedule(x.id)));
 
   return users.map((user, index) => ({
     ...user,

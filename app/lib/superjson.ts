@@ -6,18 +6,15 @@ export type SuperJsonFunction = <Data extends unknown>(
   init?: number | ResponseInit
 ) => SuperTypedResponse<Data>;
 
-export declare type SuperTypedResponse<T extends unknown = unknown> =
-  Response & {
-    superjson(): Promise<T>;
-  };
+export declare type SuperTypedResponse<T extends unknown = unknown> = Response & {
+  superjson(): Promise<T>;
+};
 
 type AppData = any;
 type DataFunction = (...args: any[]) => unknown; // matches any function
 type DataOrFunction = AppData | DataFunction;
 
-export type UseDataFunctionReturn<T extends DataOrFunction> = T extends (
-  ...args: any[]
-) => infer Output
+export type UseDataFunctionReturn<T extends DataOrFunction> = T extends (...args: any[]) => infer Output
   ? Awaited<Output> extends SuperTypedResponse<infer U>
     ? U
     : Awaited<ReturnType<T>>
@@ -40,18 +37,13 @@ export function useSuperLoaderData<T = AppData>(): UseDataFunctionReturn<T> {
   const data = useLoaderData();
   return _superjson.deserialize(data);
 }
-export function useSuperActionData<
-  T = AppData
->(): UseDataFunctionReturn<T> | null {
+export function useSuperActionData<T = AppData>(): UseDataFunctionReturn<T> | null {
   const data = useActionData();
   // eslint-disable-next-line unicorn/no-null
   return data ? _superjson.deserialize(data) : null;
 }
 
-export type RedirectFunction = (
-  url: string,
-  init?: number | ResponseInit
-) => SuperTypedResponse<never>;
+export type RedirectFunction = (url: string, init?: number | ResponseInit) => SuperTypedResponse<never>;
 
 /**
  * A redirect response. Sets the status code and the `Location` header.

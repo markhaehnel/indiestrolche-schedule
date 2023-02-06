@@ -9,10 +9,9 @@ class TwitchAPI {
   private accessToken?: string;
   private expiresAt?: number;
 
-  constructor(
-    private readonly clientId: string,
-    private readonly clientSecret: string
-  ) {}
+  constructor(private readonly clientId: string, private readonly clientSecret: string) {
+    console.log(`Creating TwitchAPI instance for clientId ${clientId}`);
+  }
 
   private async makeRequest(path: string): Promise<any> {
     const url = `${this.baseUrl}${path}`;
@@ -59,10 +58,7 @@ class TwitchAPI {
     return data.access_token;
   }
 
-  public async getSchedule(
-    userId: string,
-    startDate: Date = getStartOfWeek()
-  ): Promise<ScheduleResponse["data"]> {
+  public async getSchedule(userId: string, startDate: Date = getStartOfWeek()): Promise<ScheduleResponse["data"]> {
     let url = `/schedule?broadcaster_id=${userId}&start_time=${startDate.toISOString()}&first=25`;
 
     const response = await this.makeRequest(url);

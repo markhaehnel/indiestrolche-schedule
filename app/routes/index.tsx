@@ -1,9 +1,9 @@
 import { superjson, useSuperLoaderData } from "~/lib/superjson";
-import { scheduleResolver } from "~/lib/resolvers/scheduleResolver";
+import { scheduleResolver } from "~/lib/resolvers/scheduleResolver.server";
 import { getStartOfWeek } from "~/lib/getStartOfWeek";
 import { getWeekdayName } from "~/lib/getWeekdayName";
 import { getEndOfWeek } from "~/lib/getEndOfWeek";
-import { datesAreOnSameDay } from "~/lib/datesAreOnSameDay";
+import { isSameDay } from "~/lib/isSameDay";
 
 const filterUniqueDates = (data: Date[]) => {
   const lookup = new Set();
@@ -37,9 +37,7 @@ const getStreamerRingColor = (streamerName: string): string => {
 };
 
 export const loader = async () => {
-  return superjson(
-    await scheduleResolver(["marcusbmr", "utzstauder", "internetshawna"])
-  );
+  return superjson(await scheduleResolver(["marcusbmr", "utzstauder", "internetshawna"]));
 };
 
 export default function IndexPage() {
@@ -69,14 +67,12 @@ export default function IndexPage() {
             <h2 className={"text-center text-xl"}>{weekday.weekday}</h2>
             {userSchedules.map((user) =>
               user.segments
-                .filter((segment) =>
-                  datesAreOnSameDay(weekday.date, segment.start_time)
-                )
+                .filter((segment) => isSameDay(weekday.date, segment.start_time))
                 .map((segment) => (
                   <div key={segment.id} className={"w-screen p-4 md:w-auto"}>
                     <div
                       key={segment.id}
-                      className="card card-side card-compact mt-4 h-32 w-full truncate rounded-md bg-base-100 shadow-md md:w-96"
+                      className="card card-side card-compact mt-4 h-32 w-full truncate rounded-md bg-base-200 bg-base-100 shadow-md md:w-96"
                     >
                       <div className="avatar items-center pl-4">
                         <div
@@ -84,10 +80,7 @@ export default function IndexPage() {
                             user.login
                           )}`}
                         >
-                          <img
-                            src={user.profile_image_url}
-                            alt={user.display_name}
-                          />
+                          <img src={user.profile_image_url} alt={user.display_name} />
                         </div>
                       </div>
                       <div className="card-body truncate">
@@ -105,10 +98,7 @@ export default function IndexPage() {
                         </span>
                         {segment.category && (
                           <div className="card-actions">
-                            <i
-                              className={"truncate"}
-                              title={segment.category.name}
-                            >
+                            <i className={"truncate"} title={segment.category.name}>
                               {segment.category.name}
                             </i>
                           </div>

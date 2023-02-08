@@ -16,7 +16,7 @@ type ScheduleSegment = {
   endDate: Date;
 };
 
-type WeekSchedule = {
+export type WeekSchedule = {
   date: Date;
   segments: ScheduleSegment[];
 }[];

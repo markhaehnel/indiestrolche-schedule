@@ -1,21 +1,35 @@
 import { superjson, useSuperLoaderData } from "~/lib/superjson";
-import { scheduleResolver } from "~/lib/resolvers/scheduleResolver.server";
 import { getWeekdayName } from "~/lib/getWeekdayName";
 import { getStreamerRingColor } from "~/lib/getStreamerRingColor";
+import { isSameDay } from "~/lib/isSameDay";
+import { useEffect, useRef } from "react";
+import { getCachedWeekSchedule } from "~/lib/repo.server";
 
 export const loader = async () => {
-  return superjson(await scheduleResolver(["marcusbmr", "utzstauder", "internetshawna"]));
+  return superjson(await getCachedWeekSchedule());
 };
 
 export default function IndexPage() {
   const weeklySchedule = useSuperLoaderData<typeof loader>();
+  const todayRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    todayRef.current?.scrollIntoView({ inline: "center" });
+  }, [todayRef]);
 
   return (
-    <div className="space-x carousel-center carousel h-full p-4">
-      {weeklySchedule.map((schedule) => (
-        <div key={schedule.date.getTime()} className={"carousel-item"}>
-          <div>
-            <h2 className={"text-center text-2xl"}>{getWeekdayName(schedule.date)}</h2>
+    <div className="flex h-full w-screen max-w-full snap-x snap-x snap-mandatory flex-row overflow-scroll scroll-smooth md:snap-none">
+      {weeklySchedule.map((schedule) => {
+        const isToday = isSameDay(new Date("2023-02-10T00:00:00Z"), schedule.date);
+        return (
+          <div
+            key={schedule.date.getTime()}
+            className={`flex snap-center flex-col ${isToday ? "bg-black bg-opacity-5 shadow-lg" : ""}`}
+            ref={isToday ? todayRef : undefined}
+          >
+            <h2 className={"flex h-12 place-items-center justify-center bg-white text-center text-2xl shadow"}>
+              {getWeekdayName(schedule.date)}
+            </h2>
             {schedule.segments.map((segment) => (
               <div key={segment.id} className={"w-screen p-4 md:w-auto"}>
                 <div
@@ -56,8 +70,8 @@ export default function IndexPage() {
               </div>
             ))}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

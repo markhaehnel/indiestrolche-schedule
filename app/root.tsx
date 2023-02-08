@@ -11,7 +11,8 @@ export const meta: MetaFunction = () => ({
   // eslint-disable-next-line unicorn/text-encoding-identifier-case
   charset: "utf-8",
   title: "Indiestrolche Contentvorhersage",
-  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0",
+  description: "Aktueller Programmplan der einzelnen Indiestrolche Streams.",
+  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
 });
 
 export default function App() {

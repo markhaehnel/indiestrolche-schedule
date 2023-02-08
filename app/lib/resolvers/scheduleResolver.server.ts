@@ -40,7 +40,7 @@ const transformMergedUsersSchedules = (
       return {
         id,
         streamer: item.display_name,
-        streamerImageUrl: item.profile_image_url,
+        streamerImageUrl: item.profile_image_url.replace("300x300", "150x150"),
         title,
         category: category?.name,
         startDate: start_time,

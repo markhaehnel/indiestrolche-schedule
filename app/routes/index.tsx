@@ -20,14 +20,14 @@ export default function IndexPage() {
   return (
     <div className="flex h-full w-screen max-w-full snap-x snap-x snap-mandatory flex-row overflow-scroll scroll-smooth md:snap-none">
       {weeklySchedule.map((schedule) => {
-        const isToday = isSameDay(new Date("2023-02-10T00:00:00Z"), schedule.date);
+        const isToday = isSameDay(new Date(), schedule.date);
         return (
           <div
             key={schedule.date.getTime()}
             className={`flex snap-center flex-col ${isToday ? "bg-black bg-opacity-5 shadow-lg" : ""}`}
             ref={isToday ? todayRef : undefined}
           >
-            <h2 className={"flex h-12 place-items-center justify-center bg-white text-center text-2xl shadow"}>
+            <h2 className={"flex place-items-center justify-center bg-white py-2 text-center text-2xl shadow"}>
               {getWeekdayName(schedule.date)}
             </h2>
             {schedule.segments.map((segment) => (

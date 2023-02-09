@@ -18,7 +18,7 @@ export default function IndexPage() {
   }, [todayRef]);
 
   return (
-    <div className="flex h-full w-screen max-w-full snap-x snap-x snap-mandatory flex-row overflow-scroll scroll-smooth md:snap-none">
+    <div className="flex h-full w-screen max-w-full snap-x snap-x snap-mandatory flex-row overflow-y-auto overflow-x-scroll scroll-smooth md:snap-none">
       {weeklySchedule.map((schedule) => {
         const isToday = isSameDay(new Date(), schedule.date);
         return (

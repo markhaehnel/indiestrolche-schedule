@@ -34,7 +34,7 @@ export default function IndexPage() {
               <div key={segment.id} className={"w-screen p-4 md:w-auto"}>
                 <div
                   key={segment.id}
-                  className="card card-side card-compact h-32 w-full truncate rounded-md bg-base-100 shadow transition-all hover:scale-105 hover:cursor-pointer hover:shadow md:w-96"
+                  className="card card-side card-compact h-32 w-full truncate rounded-md bg-base-100 shadow transition-all hover:z-10 hover:scale-110 hover:cursor-pointer hover:shadow md:w-96"
                 >
                   <div className="avatar items-center pl-4">
                     <div

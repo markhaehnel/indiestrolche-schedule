@@ -10,7 +10,7 @@
     "start": "remix-serve build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc && tsc -p cypress"
+    "typecheck": "tsc"
   },
   "prettier": {
     "printWidth": 120

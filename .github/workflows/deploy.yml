@@ -80,7 +80,7 @@ jobs:
         run: npm run test -- --coverage
 
   build:
-    name: Build
+    name: Build & push docker image
     # only build/deploy main branch on pushes
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     runs-on: ubuntu-latest

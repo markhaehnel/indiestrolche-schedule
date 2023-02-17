@@ -23,11 +23,5 @@ module.exports = {
       version: 27,
     },
   },
-  ignorePatterns: [
-    "remix.env.d.ts",
-    "remix.config.js",
-    "jest.config.js",
-    ".eslintrc.js",
-    "setup-test-env.ts",
-  ],
+  ignorePatterns: ["remix.env.d.ts", "remix.config.js", "jest.config.js", ".eslintrc.js", "setup-test-env.ts"],
 };

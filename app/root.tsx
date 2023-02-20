@@ -4,7 +4,11 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@re
 import stylesheet from "~/tailwind.css";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: stylesheet }];
+  return [
+    { rel: "icon", type: "image/png", href: "images/icons/icon-128x128.png" },
+    { rel: "manifest", href: "manifest.json" },
+    { rel: "stylesheet", href: stylesheet },
+  ];
 };
 
 export const meta: MetaFunction = () => ({

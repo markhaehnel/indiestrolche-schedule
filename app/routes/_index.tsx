@@ -48,10 +48,12 @@ export default function IndexPage() {
                   <div className="card-body truncate">
                     <b>
                       {segment.startDate.toLocaleTimeString("de", {
+                        timeZone: "Europe/Berlin",
                         timeStyle: "short",
                       })}{" "}
                       -{" "}
                       {segment.endDate.toLocaleTimeString("de", {
+                        timeZone: "Europe/Berlin",
                         timeStyle: "short",
                       })}
                     </b>

@@ -1,26 +1,40 @@
 import type { WeekSchedule } from "~/lib/resolvers/scheduleResolver.server";
 import { scheduleResolver } from "~/lib/resolvers/scheduleResolver.server";
+import { streamsResolver } from "~/lib/resolvers/streamsResolver.server";
+import type { StreamsResponse } from "~/lib/twitch/models/StreamsResponseSchema";
 
-let cache: { data: WeekSchedule | undefined; expiresAt: number } = {
-  data: undefined,
+type CachedData = { schedule: WeekSchedule; streams: StreamsResponse["data"] };
+
+let cache: {
+  schedule: Awaited<ReturnType<typeof scheduleResolver>> | undefined;
+  streams: Awaited<ReturnType<typeof streamsResolver>> | undefined;
+  expiresAt: number;
+} = {
+  schedule: undefined,
+  streams: undefined,
   expiresAt: 0,
 };
 
-const updateCache = async (): Promise<WeekSchedule> => {
-  const data = await scheduleResolver(["marcusbmr", "utzstauder", "internetshawna"]);
+const updateCache = async (): Promise<CachedData> => {
+  const userNames = ["marcusbmr", "utzstauder", "internetshawna"];
+  const [schedule, streams] = await Promise.all([scheduleResolver(userNames), streamsResolver(userNames)]);
+
   cache = {
-    data,
-    expiresAt: Date.now() + (process.env.NODE_ENV === "production" ? 1_800_000 : 60_000),
+    schedule,
+    streams,
+    expiresAt: Date.now() + (process.env.NODE_ENV === "production" ? 900_000 : 60_000),
   };
-  return data;
+
+  return { schedule, streams };
 };
 
 setInterval(async () => {
-  await getCachedWeekSchedule();
+  await getCachedData();
 }, 60_000);
 
-const getCachedWeekSchedule = async (): Promise<WeekSchedule> => {
-  return cache.data && Date.now() < cache.expiresAt ? cache.data : updateCache();
+const getCachedData = async (): Promise<CachedData> => {
+  const { schedule, streams, expiresAt } = cache;
+  return schedule && streams && Date.now() < expiresAt ? { schedule, streams } : updateCache();
 };
 
-export { getCachedWeekSchedule };
+export { getCachedData };

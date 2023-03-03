@@ -1,5 +1,5 @@
 import pipe from "froebel/pipe";
-import type { UserResponse } from "~/lib/twitch/models/UserResponse";
+import type { UserResponse } from "~/lib/twitch/models/UserResponseSchema";
 import { getTwitchAPIClient } from "~/lib/twitch/getTwitchAPIClient.server";
 import { filterUniqueDates } from "~/lib/filterUniqueDates";
 import { getStartOfWeek } from "~/lib/getStartOfWeek";

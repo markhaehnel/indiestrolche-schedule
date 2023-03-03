@@ -1,8 +1,8 @@
 import type { ScheduleResponse } from "~/lib/twitch/models/ScheduleResponseSchema";
 import { ScheduleResponseSchema } from "~/lib/twitch/models/ScheduleResponseSchema";
-import type { UserResponse } from "~/lib/twitch/models/UserResponse";
-import { UserResponseSchema } from "~/lib/twitch/models/UserResponse";
+import { type UserResponse, UserResponseSchema } from "~/lib/twitch/models/UserResponseSchema";
 import { getStartOfWeek } from "~/lib/getStartOfWeek";
+import { type StreamsResponse, StreamsResponseSchema } from "~/lib/twitch/models/StreamsResponseSchema";
 
 class TwitchAPI {
   private readonly baseUrl = "https://api.twitch.tv/helix";
@@ -71,6 +71,14 @@ class TwitchAPI {
 
     const response = await this.makeRequest(url);
     const { data } = await UserResponseSchema.parseAsync(response);
+    return data;
+  }
+
+  public async getStreams(userNames: string[]): Promise<StreamsResponse["data"]> {
+    let url = `/streams?type=live&user_login=${userNames.join("&user_login=")}`;
+
+    const response = await this.makeRequest(url);
+    const { data } = await StreamsResponseSchema.parseAsync(response);
     return data;
   }
 }

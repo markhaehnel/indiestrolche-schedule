@@ -7,6 +7,7 @@ Shows the Indiestrolche schedule of the current week based on their Twitch sched
 Requirements:
 
 - node.js 18 or greater
+- redis
 
 Before you can run the application, you need to set your Twitch client secret and client id in the .env file.
 

@@ -10,7 +10,7 @@ declare global {
 // this is needed because in development we don't want to restart
 // the server with every change, but we want to make sure we don't
 // create an API client with every change either.
-// in production, we'll have a single connection to the DB.
+// in production, we'll have a single client.
 if (process.env.NODE_ENV === "production") {
   twitchApi = new TwitchAPI(process.env.TWITCH_CLIENT_ID!, process.env.TWITCH_CLIENT_SECRET!);
 } else {

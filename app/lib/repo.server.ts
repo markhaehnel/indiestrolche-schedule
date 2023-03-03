@@ -1,13 +1,17 @@
+import type { WeekSchedule } from "~/lib/resolvers/scheduleResolver.server";
 import { scheduleResolver } from "~/lib/resolvers/scheduleResolver.server";
 import { streamsResolver } from "~/lib/resolvers/streamsResolver.server";
 import Redis from "ioredis";
 import superjson from "superjson";
+import type { StreamsResponse } from "~/lib/twitch/models/StreamsResponseSchema";
 
 const redis = new Redis(process.env.REDIS_URL || "redis://127.0.0.1:6379");
 
 const CACHE_KEY = "indiestrolche-schedule-cache";
 
-const updateCache = async () => {
+type CachedData = { schedule: WeekSchedule; streams: StreamsResponse["data"] };
+
+const updateCache = async (): Promise<CachedData> => {
   const userNames = ["marcusbmr", "utzstauder", "internetshawna"];
   const [schedule, streams] = await Promise.all([scheduleResolver(userNames), streamsResolver(userNames)]);
 
@@ -22,7 +26,7 @@ setInterval(async () => {
   await getCachedData();
 }, 60_000);
 
-const getCachedData = async () => {
+const getCachedData = async (): Promise<CachedData> => {
   const data = await redis.get(CACHE_KEY);
 
   return data ? superjson.parse(data) : await updateCache();

@@ -28,10 +28,4 @@ const getCachedData = async (): Promise<WeekSchedule> => {
   return data ? superjson.parse(data) : await updateCache();
 };
 
-const checkCache = async (): Promise<void> => {
-  if (!(await redis.get(CACHE_KEY))) {
-    throw new Error("No cache entry found.");
-  }
-};
-
-export { getCachedData, checkCache };
+export { getCachedData };

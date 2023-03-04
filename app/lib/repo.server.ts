@@ -1,32 +1,28 @@
 import type { WeekSchedule } from "~/lib/resolvers/scheduleResolver.server";
 import { scheduleResolver } from "~/lib/resolvers/scheduleResolver.server";
-import { streamsResolver } from "~/lib/resolvers/streamsResolver.server";
 import Redis from "ioredis";
 import superjson from "superjson";
-import type { StreamsResponse } from "~/lib/twitch/models/StreamsResponseSchema";
 
-const redis = new Redis(process.env.REDIS_URL || "redis://127.0.0.1:6379");
+const redis = new Redis(process.env.REDIS_URL || "redis://127.0.0.1:6379", {
+  family: Number.parseInt(process.env.REDIS_PROTOCOL_FAMILY || "4"),
+});
 
-const CACHE_KEY = "indiestrolche-schedule-cache";
+const CACHE_KEY = "schedule-cache";
 
-type CachedData = { schedule: WeekSchedule; streams: StreamsResponse["data"] };
-
-const updateCache = async (): Promise<CachedData> => {
+const updateCache = async (): Promise<WeekSchedule> => {
   const userNames = ["marcusbmr", "utzstauder", "internetshawna"];
-  const [schedule, streams] = await Promise.all([scheduleResolver(userNames), streamsResolver(userNames)]);
+  const schedule = await scheduleResolver(userNames);
 
-  const data = { schedule, streams };
+  await redis.set(CACHE_KEY, superjson.stringify(schedule), "EX", 1800);
 
-  await redis.set(CACHE_KEY, superjson.stringify(data), "EX", process.env.NODE_ENV === "production" ? 600 : 60);
-
-  return data;
+  return schedule;
 };
 
 setInterval(async () => {
   await getCachedData();
 }, 60_000);
 
-const getCachedData = async (): Promise<CachedData> => {
+const getCachedData = async (): Promise<WeekSchedule> => {
   const data = await redis.get(CACHE_KEY);
 
   return data ? superjson.parse(data) : await updateCache();

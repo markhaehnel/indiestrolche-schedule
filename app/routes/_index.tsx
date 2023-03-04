@@ -11,7 +11,7 @@ export const loader = async () => {
 };
 
 export default function IndexPage() {
-  const { schedule: weeklySchedule, streams } = useSuperLoaderData<typeof loader>();
+  const weeklySchedule = useSuperLoaderData<typeof loader>();
   const todayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
